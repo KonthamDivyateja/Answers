@@ -1,95 +1,109 @@
-# Answers
+ # Answers
 
-## Q1. Role of Frontend (FE)
+## 1. Node.js Architecture
 
-Frontend is the part of a web application that users directly interact with.
+Node.js is a JavaScript runtime that allows developers to run JavaScript outside the browser. It is designed to be asynchronous, non-blocking, and efficient for scalable applications.
 
-### User Interface
-- Explain how FE is responsible for layout, design, and visual elements
-- Mention HTML, CSS, and JavaScript
+### JavaScript Engine (V8)
+V8 is Google’s JavaScript engine used by Node.js.
+ It converts JavaScript code into machine code.
+ It executes synchronous JavaScript operations.
+ It handles memory management and garbage collection.
 
-### User Interaction
-- Describe handling clicks, forms, inputs, validations, and feedback
-- Explain how user actions trigger changes on the screen
+### Node.js Core APIs
+ Core APIs are built-in modules provided by Node.js.
+ Examples include `fs`, `http`, `path`, `events`, and `crypto`.
+ These APIs help interact with files, network, and system resources.
+ They are implemented using JavaScript and C++.
 
-### Communication with Backend
-- Explain how frontend sends requests to backend using APIs
-- Mention HTTP methods like GET and POST
+### Native Bindings
+ Native bindings connect JavaScript with low-level C/C++ code.
+ They allow Node.js to access system-level features.
+ Used internally by modules like `fs` and `crypto`.
+ They improve performance for heavy operations.
 
+### Event Loop
+ The event loop handles asynchronous operations.
+ It checks different queues and executes callbacks.
+ It allows Node.js to be non-blocking while using a single thread.
+ Implemented internally using libuv.
 
-## Q2. Role of Backend (BE)
+---
 
-Backend handles the server-side operations of a web application.
+## 2. libuv
 
-### Server-Side Processing
-- Explain request handling and response generation
-- Mention business rules execution
+### What is libuv?
+ libuv is a C library used by Node.js.
+ It provides support for asynchronous I/O operations.
+ It works across multiple operating systems.
 
-### Database Handling
-- Describe storing, retrieving, updating data
-- Mention databases like SQL or NoSQL
+### Why Node.js Needs libuv
+ JavaScript alone cannot handle async system-level tasks.
+ libuv manages background tasks efficiently.
+ It helps Node.js remain fast and non-blocking.
 
-### Security and Authentication
-- Explain login, authentication, authorization
-- Mention data protection and validation
+### Responsibilities of libuv
+ Managing the event loop
+ Handling asynchronous I/O
+ Managing the thread pool
+ Handling timers and callbacks
+ Providing cross-platform compatibility
 
+## 3. Thread Pool
 
-## Q3. Business Logic
+### What is a Thread Pool?
+ A thread pool is a set of background threads.
+ Used to perform heavy or blocking operations.
+ Node.js uses a default thread pool size of 4.
 
-Business logic defines the rules and decision-making process of an application.
+### Why Node.js Uses a Thread Pool
+ To prevent blocking the main event loop.
+ To handle CPU-intensive and blocking tasks.
+ To improve performance and responsiveness.
 
-### Explanation
-- Write what business logic means in simple terms
-- Explain why it is important
+### Operations Handled by the Thread Pool
+ File system operations (`fs`)
+ Cryptography tasks
+ Compression (`zlib`)
+ Some DNS operations
 
-### Real-World Examples
-1. Example 1 (e.g., e-commerce pricing/discount)
-2. Example 2 (e.g., login or access control)
-3. Example 3 (e.g., booking or order status)
+## 4. Worker Threads
 
+### What Are Worker Threads?
+Worker threads allow JavaScript code to run in parallel.
+ Each worker has its own event loop and memory.
+ Mainly used for CPU-intensive tasks.
 
-## Q4. Client–Server Model
+### Why Worker Threads Are Needed
+ To avoid blocking the main thread.
+ To perform heavy computations efficiently.
+ To improve application scalability.
 
-The client-server model describes how applications communicate.
+### Difference Between Thread Pool and Worker Threads
+ Thread pool is managed internally by Node.js.
+ Worker threads are created explicitly by developers.
+ Thread pool is for internal async tasks.
+ Worker threads are for custom parallel execution.
 
-### Who is the Client
-- Explain browser or mobile app role
+## 5. Event Loop Queues
 
-### Who is the Server
-- Explain server responsibilities
+### Macro Task Queue
+Contains tasks like:
+  - `setTimeout`
+  - `setInterval`
+  - I/O callbacks
+ Executed after the current execution completes.
 
-### Communication Process
-- Explain request–response cycle
-- Mention HTTP/HTTPS
+### Micro Task Queue
+ Contains tasks like:
+  - `Promise.then`
+  - `process.nextTick`
+ Executed immediately after the current operation.
 
+### Execution Priority
+ Micro tasks are executed before macro tasks.
+ Event loop always clears the micro task queue first.
 
-## Q5. Three-Tier Architecture
-
-Three-tier architecture separates an application into layers.
-
-### Presentation Layer
-- Explain UI responsibility
-
-### Application (Business) Layer
-- Explain logic handling
-
-### Data Layer
-- Explain database role
-
-### Why This Architecture is Used
-- Mention scalability, maintainability, security
-
-
-## Q6. JavaScript as a Backend Language
-
-JavaScript is used on the backend mainly with Node.js.
-
-### Performance
-- Explain non-blocking, event-driven nature
-
-### Ecosystem
-- Mention npm and community support
-
-### Popular Backend Frameworks
-- Express.js
-- NestJS (optional)
+### Examples
+- Micro Task: Promise callbacks
+- Macro Task: Timers and I/O callbacks
